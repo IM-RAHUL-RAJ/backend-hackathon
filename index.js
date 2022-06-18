@@ -40,7 +40,7 @@ app.use(cors())
 app.get('/',(req, res)=>{
     res.sendFile(__dirname+'/public/index.html');
 })
-app.get('/users',(req,res)=>{
+app.get('/admins',(req,res)=>{
     const query='SELECT * FROM admins'
     db.query(query,(err,results)=>{
         if(err){
@@ -130,8 +130,56 @@ app.post('/booking',(req,res)=>{
     })
 })
 
+app.post('/createuser',(req,res)=>{
+    //res.sendStatus(200);
+    var data=req.body;
+    console.log(data);
+    // var user_id=data.user_id;
+    var user_name=data.user_name;
+    var user_email=data.user_email;
+    var user_password=data.user_password;
+    var user_phoneno=data.user_phoneno;
+    var sql=`INSERT INTO users(user_name,user_email,user_password,user_phoneno)VALUES('${user_name}', '${user_email}','${user_password}' ,'${user_phoneno}');`;
+   
+    db.query(sql,(err,results)=>{
+        if(err){
+            res.status(500).send(err);
+        }
+        else {
+            console.log(results);
+            res.send(results);
+        }
+        
+    })
+})
 
 
+app.post('/createadmin',(req,res)=>{
+    //res.sendStatus(200);
+    var data=req.body;
+    console.log(data);
+    // var user_id=data.user_id;
+    var title=data.title;
+    var name=data.name;
+    var email=data.email;
+    var password=data.password;
+    var phone_number=data.phone_number;
+    var latitude=data.latitude;
+    var longitude=data.longitude;
+    var description=data.description;
+    var sql=`INSERT INTO admins(title,name,email,password,phone_number,latitude,longitude,description) VALUES('${title}', '${name}','${email}' ,'${password}','${phone_number}','${latitude}','${longitude}','${description}');`;
+   
+    db.query(sql,(err,results)=>{
+        if(err){
+            res.status(500).send(err);
+        }
+        else {
+            console.log(results);
+            res.send(results);
+        }
+        
+    })
+})
 
 
 
