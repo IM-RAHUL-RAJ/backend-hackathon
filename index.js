@@ -24,7 +24,8 @@ const db = mysql.createConnection({
     password: 'QwertyQwerty@123',
     database: 'car_service',
     // port: process.env.PORT || 5000,
-        ssl: {rejectUnauthorized:false}
+        ssl: {rejectUnauthorized:false},
+    multipleStatements: true
 
 
 })
@@ -139,7 +140,8 @@ app.post('/createuser',(req,res)=>{
     var user_email=data.user_email;
     var user_password=data.user_password;
     var user_phoneno=data.user_phoneno;
-    var sql=`INSERT INTO users(user_name,user_email,user_password,user_phoneno)VALUES('${user_name}', '${user_email}','${user_password}' ,'${user_phoneno}');`;
+    var sql=`INSERT INTO users(user_name,user_email,user_password,user_phoneno)VALUES('${user_name}', '${user_email}','${user_password}' ,'${user_phoneno}');`
+    // SELECT user_id from users;`;
    
     db.query(sql,(err,results)=>{
         if(err){
@@ -150,6 +152,22 @@ app.post('/createuser',(req,res)=>{
             res.send(results);
         }
         
+    })
+})
+
+app.get('/currentuserid',(req,res)=>{
+    // const id=req.query.adminid;
+    // console.log(id);
+    const query=`SELECT user_id from users WHERE user_id=(SELECT max(user_id) from users)`;
+    db.query(query,(err,results)=>{
+        if(err){
+            res.status(500).send(err)
+        }
+        console.log('connected');
+      
+        console.log(results);
+        res.send(results);
+        console.log(typeof results);
     })
 })
 
