@@ -175,6 +175,27 @@ app.get('/currentuserid',(req,res)=>{
 })
 
 
+
+app.get('/getallbookings',(req,res)=>{
+    const id=req.query.userid;
+    console.log(id);
+    const query=`  SELECT b.user_id,b.booking_id,s.service_type,b.admin_id,b.date_available,b.time_slot FROM bookings b INNER JOIN services s ON b.service_id=s.service_id AND b.user_id=${id};`;
+    db.query(query,(err,results)=>{
+        if(err){
+            res.status(500).send(err)
+        }
+        console.log('connected');
+        // const myJSON = JSON.stringify(results);
+
+        // console.log(typeof results);
+        // res.send(myJSON);
+        console.log(results);
+        res.send(results);
+        // console.log();
+    })
+})
+
+
 app.post('/createadmin',(req,res)=>{
     //res.sendStatus(200);
     var data=req.body;
