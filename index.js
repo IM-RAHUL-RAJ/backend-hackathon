@@ -107,6 +107,28 @@ app.get("/services2",(req,res)=>{
     })
 })
 
+app.post('/booking',(req,res)=>{
+    //res.sendStatus(200);
+    var data=req.body;
+    console.log(data);
+    var admin_id=data.admin_id;
+    var service_id=data.service_id;
+    var user_id=data.user_id;
+    var date_available=data.date;
+    var time_slot=data.time;
+    var sql=`INSERT INTO bookings(admin_id,service_id,user_id,date_available,time_slot,booking_status)VALUES('${admin_id}', '${service_id}','${user_id}' ,'${date_available}','${time_slot}','"BOOKED"');`;
+   
+    db.query(sql,(err,results)=>{
+        if(err){
+            res.status(500).send(err);
+        }
+        else {
+            console.log(results);
+            res.send(results);
+        }
+        
+    })
+})
 
 
 
