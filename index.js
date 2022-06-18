@@ -102,7 +102,7 @@ app.get("/services2",(req,res)=>{
         }
         console.log('connected');
       
-        console.log(results);
+        console.log(results[0].service_id);
         res.send(results);
         console.log(typeof results);
     })
@@ -158,16 +158,19 @@ app.post('/createuser',(req,res)=>{
 app.get('/currentuserid',(req,res)=>{
     // const id=req.query.adminid;
     // console.log(id);
-    const query=`SELECT user_id from users WHERE user_id=(SELECT max(user_id) from users)`;
+    const query=`SELECT user_id from users WHERE user_id=(SELECT max(user_id) from users);`;
     db.query(query,(err,results)=>{
         if(err){
             res.status(500).send(err)
         }
         console.log('connected');
-      
-        console.log(results);
+        // const myJSON = JSON.stringify(results);
+
+        // console.log(typeof results);
+        // res.send(myJSON);
+        console.log(results[0].user_id);
         res.send(results);
-        console.log(typeof results);
+        // console.log();
     })
 })
 
