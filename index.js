@@ -17,7 +17,7 @@ app.use(bodyParser.json())
 //         ssl: {rejectUnauthorized:false}
 //       })
 
-const db = mysql.createPool({
+const db = mysql.createConnection({
 
     host: 'symbiotdb.mysql.database.azure.com',
     user: 'symbiot',
@@ -27,6 +27,14 @@ const db = mysql.createPool({
         ssl: {rejectUnauthorized:false}
 
 
+})
+db.connect((err)=>{
+    if(err){
+        throw err;
+    }
+    else{
+        console.log('connected');
+    }
 })
 app.use(cors()) 
 app.get('/',(req, res)=>{
@@ -54,29 +62,55 @@ app.get('/users',(req,res)=>{
 // })
 
 function queryExecute(sql,res){
-    db.query(sql,function(err,results){
+    db.query(sql, function(err, results){
         if(err){
-            console.log("error");
+            console.log(err);
           
         }
         res.json(results);
-        // console.log(results);
+        console.log(results);
 
     });
 }
 app.post('/services',(req,res)=>{
-    // res.sendStatus(200);
-    const n=req.body;
-    console.log(Object.keys(n).length);
-    console.log(n.length);
-    console.log(n);
-    const id=n.id;
-    const name=n.name;
-    const salary=n.salary;
-    const age=n.age;
-    let sql=`INSERT INTO demo(name,salary,age) VALUES ('${name}', '${salary}', '${age}');`
-    queryExecute(sql,res);
+    //res.sendStatus(200);
+    var n=req.body;
+    var name=n.name;
+    var salary=n.salary;
+    var age=n.age;
+    var sql=`INSERT INTO demo(name, salary, age)VALUES('${name}', '${salary}', '${age}');`;
+    db.query(sql,(err,results)=>{
+        if(err){
+            res.status(500).send(err);
+        }
+        else {
+            console.log(results);
+            res.send(results);
+        }
+        
+    })
 })
+
+app.get("/services2",(req,res)=>{
+    const id=req.query.adminid;
+    console.log(id);
+    const query=`SELECT * FROM services where admin_id=${id};`
+    db.query(query,(err,results)=>{
+        if(err){
+            res.status(500).send(err)
+        }
+        console.log('connected');
+      
+        console.log(results);
+        res.send(results);
+        console.log(typeof results);
+    })
+})
+
+
+
+
+
 
 
 
@@ -89,3 +123,4 @@ app.listen(p , (err) => {
     }
     console.log('running');
 })
+
