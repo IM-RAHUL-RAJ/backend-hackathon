@@ -5,7 +5,7 @@ const cors=require('cors')
 var bodyParser = require('body-parser')
 app.use(express.urlencoded({ extended: true }))
 app.use(bodyParser.json())
-
+//**********************************************all requirements******************************************
 // app.get('/', function(req, res){
 //     res.send('hello');
 //     var connection = mysql.createConnection({
@@ -16,6 +16,7 @@ app.use(bodyParser.json())
 //         port:3306,
 //         ssl: {rejectUnauthorized:false}
 //       })
+
 
 const db = mysql.createConnection({
 
@@ -37,6 +38,7 @@ db.connect((err)=>{
         console.log('connected');
     }
 })
+//**************************database connection************************ */
 app.use(cors()) 
 app.get('/',(req, res)=>{
     res.sendFile(__dirname+'/public/index.html');
@@ -53,7 +55,7 @@ app.get('/admins',(req,res)=>{
     })
 })
 
-      
+  /******************************get all admin data************************* */    
 // connection.connect(function(err) {
 //     if (err) throw err
 //     console.log('You are now connected...')
@@ -73,6 +75,7 @@ function queryExecute(sql,res){
 
     });
 }
+// *********************squery execute**************************
 app.post('/services',(req,res)=>{
     //res.sendStatus(200);
     var n=req.body;
@@ -91,7 +94,7 @@ app.post('/services',(req,res)=>{
         
     })
 })
-
+// *******************************values insertion in services******************************
 app.get("/services2",(req,res)=>{
     const id=req.query.adminid;
     console.log(id);
@@ -107,6 +110,9 @@ app.get("/services2",(req,res)=>{
         console.log(typeof results);
     })
 })
+
+// *******************************values insertion in services 2******************************
+
 
 app.post('/booking',(req,res)=>{
     //res.sendStatus(200);
@@ -130,6 +136,8 @@ app.post('/booking',(req,res)=>{
         
     })
 })
+// *******************************values insertion in services******************************
+
 
 app.post('/createuser',(req,res)=>{
     //res.sendStatus(200);
@@ -195,6 +203,25 @@ app.get('/getallbookings',(req,res)=>{
     })
 })
 
+app.get('/getallbookingsadmin',(req,res)=>{
+    const id=req.query.adminid;
+    console.log(id);
+    const query=`  SELECT b.user_id, b.admin_id,b.booking_id,s.service_type, s.service_cost,b.admin_id,b.date_available,b.time_slot FROM bookings b INNER JOIN services s ON b.service_id=s.service_id AND b.admin_id=${id};`;
+    db.query(query,(err,results)=>{
+        if(err){
+            res.status(500).send(err)
+        }
+        console.log('connected');
+        // const myJSON = JSON.stringify(results);
+
+        // console.log(typeof results);
+        // res.send(myJSON);
+        console.log(results);
+        res.send(results);
+        // console.log();
+    })
+})
+
 
 app.post('/createadmin',(req,res)=>{
     //res.sendStatus(200);
@@ -223,9 +250,25 @@ app.post('/createadmin',(req,res)=>{
     })
 })
 
+app.get('/rating',(req,res)=>{
+    const id=req.query.adminid;
+    const sql=`SELECT admin_rating FROM ratings WHERE admin_id=${id};`
+    db.query(sql,(err,results)=>{
+        if(err){
+            res.status(500).send(err)
+        }
+        console.log('connected');
+        // const myJSON = JSON.stringify(results);
 
+        // console.log(typeof results);
+        // res.send(myJSON);
+        console.log(results);
+        res.send(results);
+        // console.log();
+    })
+})
 
-
+//***************************************server listening********************* */
 
 const p=(3001);
 app.listen(p , (err) => {
